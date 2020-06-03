@@ -4,29 +4,37 @@ import cors from 'cors';
 import routes from './routes';
 
 class Index {
+  private express: express.Application;
+  private connectionString: any;
+
   constructor() {
     this.express = express();
+    this.connectionString = process.env.CONNECTION_STRING;
 
     this.middlewares();
     this.database();
     this.routes();
   }
 
-  middlewares() {
+  public getServer(): express.Application {
+    return this.express;
+  }
+
+  private middlewares(): void {
     this.express.use(cors());
     this.express.use(express.json());
   }
 
-  database() {
-    mongoose.connect(process.env.CONNECTION_STRING, {
+  private database(): void {
+    mongoose.connect(this.connectionString, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
   }
 
-  routes() {
+  private routes(): void {
     this.express.use(routes);
   }
 }
 
-export default new Index().express;
+export default Index;

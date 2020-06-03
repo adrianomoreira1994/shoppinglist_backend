@@ -1,6 +1,7 @@
 import { Schema, model } from 'mongoose';
+import IProduct from '../models/IProduct';
 
-const Product = Schema(
+const Product = new Schema(
   {
     title: String,
     quantity: Number,
@@ -11,4 +12,4 @@ const Product = Schema(
   }
 );
 
-export default model('Product', Product);
+export default model<IProduct>('Product', Product);
