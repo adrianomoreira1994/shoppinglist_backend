@@ -6,6 +6,7 @@ interface IUser extends Document {
   document: string;
   email: string;
   password: string;
+  checkPassword: (this: IUser, password: string) => Promise<Boolean>;
 }
 
 export default IUser;

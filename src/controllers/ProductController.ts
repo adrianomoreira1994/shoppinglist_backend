@@ -5,7 +5,7 @@ import Product from '../schemas/ProductSchema';
 class ProductController {
   async index(request: Request, response: Response) {
     try {
-      const productResponse = await Product.find({});
+      const productResponse = await Product.find({ user_id: request.userId });
       const products = productResponse.map((product) => ({
         id: product.id,
         title: product.title,
@@ -23,7 +23,17 @@ class ProductController {
   async create(request: Request, response: Response) {
     try {
       const { title, quantity, price } = request.body;
-      const createdProduct = await Product.create({ title, quantity, price });
+
+      if (!!request.userId == false) {
+        return response.status(400).send("You haven't permission");
+      }
+
+      const createdProduct = await Product.create({
+        title,
+        quantity,
+        price,
+        user_id: request.userId,
+      });
 
       return response.status(201).send(createdProduct);
     } catch (error) {
@@ -34,7 +44,10 @@ class ProductController {
   async update(request: Request, response: Response) {
     try {
       const { id } = request.params;
-      const product = await Product.findOneAndUpdate({ _id: id }, request.body);
+      const product = await Product.findOneAndUpdate(
+        { _id: id, user_id: request.userId },
+        request.body
+      );
 
       return response.status(200).send(product);
     } catch (error) {
@@ -45,7 +58,7 @@ class ProductController {
   async delete(request: Request, response: Response) {
     try {
       const { id } = request.params;
-      await Product.findOneAndDelete({ _id: id });
+      await Product.findOneAndDelete({ _id: id, user_id: request.userId });
 
       return response.json();
     } catch (error) {

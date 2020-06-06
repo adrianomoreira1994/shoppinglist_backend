@@ -29,6 +29,17 @@ class UserController {
       return response.status(400).send(error.message);
     }
   }
+
+  public async remove(request: Request, response: Response): Promise<Response> {
+    try {
+      const { id } = request.params;
+      await User.findOneAndDelete({ _id: id });
+
+      return response.status(200).send();
+    } catch (error) {
+      return response.status(400).send(error.message);
+    }
+  }
 }
 
 export default UserController;
