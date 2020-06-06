@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import formatNumber from '../util/format';
-import Product from '../schemas/product.schema';
+import Product from '../schemas/ProductSchema';
 
 class ProductController {
   async index(request: Request, response: Response) {
