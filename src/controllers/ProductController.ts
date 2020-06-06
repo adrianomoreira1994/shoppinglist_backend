@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import formatNumber from '../util/format';
 import Product from '../schemas/product.schema';
 
 class ProductController {
@@ -9,7 +10,8 @@ class ProductController {
         id: product.id,
         title: product.title,
         quantity: product.quantity,
-        price: product.price,
+        price: formatNumber(product.price),
+        subTotal: formatNumber(product.price * product.quantity),
       }));
 
       return response.status(200).send(products);
