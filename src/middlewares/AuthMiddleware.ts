@@ -1,5 +1,11 @@
 import { Request, Response, NextFunction } from 'express';
-import Auth from '../config/Auth';
+import jwt from 'jsonwebtoken';
+
+interface TokenPayload {
+  id: string;
+  iat: number;
+  exp: number;
+}
 
 export default async function (
   request: Request,
@@ -15,8 +21,13 @@ export default async function (
   const [, token] = authHeader?.split(' ');
 
   try {
-    const decodedToken = await Auth.decodedToken(String(token));
-    request.userId = decodedToken.id;
+    const decodedToken = jwt.verify(token, String(process.env.SECRET));
+
+    console.log(decodedToken);
+
+    const { id } = decodedToken as TokenPayload;
+
+    request.userId = id;
 
     return next();
   } catch (error) {

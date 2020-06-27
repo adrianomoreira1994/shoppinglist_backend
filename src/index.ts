@@ -1,40 +1,37 @@
-import express from 'express';
-import mongoose from 'mongoose';
-import cors from 'cors';
+import 'reflect-metadata';
+
+import express, { Request, Response, NextFunction } from 'express';
+import 'express-async-errors';
+
 import routes from './routes';
+import AppError from './errors/AppError';
 
-class Index {
-  private express: express.Application;
-  private connectionString: any;
+import './database';
 
-  constructor() {
-    this.express = express();
-    this.connectionString = process.env.CONNECTION_STRING;
+const app = express();
 
-    this.middlewares();
-    this.database();
-    this.routes();
-  }
+app.use(express.json());
+app.use(routes);
 
-  public getServer(): express.Application {
-    return this.express;
-  }
+app.use(
+  (error: Error, request: Request, response: Response, _: NextFunction) => {
+    if (error instanceof AppError) {
+      return response.status(error.statusCode).json({
+        status: 'error',
+        message: error.message,
+      });
+    }
 
-  private middlewares(): void {
-    this.express.use(cors());
-    this.express.use(express.json());
-  }
+    console.error(error);
 
-  private database(): void {
-    mongoose.connect(this.connectionString, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
+    return response.status(500).json({
+      status: 'error',
+      message: 'Internal server error',
     });
   }
+);
 
-  private routes(): void {
-    this.express.use(routes);
-  }
-}
-
-export default Index;
+const port = process.env.PORT || 3333;
+app.listen(port, () =>
+  console.log(`🚀 Api started at http://localhost:${port}`)
+);
