@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
+import AppError from '../errors/AppError';
 
 interface TokenPayload {
   id: string;
@@ -15,7 +16,7 @@ export default async function (
   const authHeader = request.headers.authorization;
 
   if (!authHeader) {
-    return response.status(401).send({ error: 'Token is not provider' });
+    throw new AppError('Token is missing', 401);
   }
 
   const [, token] = authHeader?.split(' ');
@@ -31,6 +32,6 @@ export default async function (
 
     return next();
   } catch (error) {
-    return response.status(401).send({ error: 'Token is not provider' });
+    throw new AppError('Token is invalid', 401);
   }
 }
