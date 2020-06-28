@@ -1,11 +1,12 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import AppError from '../errors/AppError';
+import authConfig from '../config/auth';
 
 interface TokenPayload {
-  id: string;
   iat: number;
   exp: number;
+  sub: string;
 }
 
 export default async function (
@@ -22,13 +23,13 @@ export default async function (
   const [, token] = authHeader?.split(' ');
 
   try {
-    const decodedToken = jwt.verify(token, String(process.env.SECRET));
+    const decodedToken = jwt.verify(token, authConfig.jwt.secret);
 
-    console.log(decodedToken);
+    const { sub } = decodedToken as TokenPayload;
 
-    const { id } = decodedToken as TokenPayload;
-
-    request.userId = id;
+    request.user = {
+      id: sub,
+    };
 
     return next();
   } catch (error) {
