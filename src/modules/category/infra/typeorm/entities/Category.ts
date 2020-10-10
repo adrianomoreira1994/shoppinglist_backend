@@ -5,8 +5,8 @@ import {
   CreateDateColumn,
 } from 'typeorm';
 
-@Entity('products')
-class Product {
+@Entity('categories')
+class Category {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -14,16 +14,7 @@ class Product {
   name: string;
 
   @Column()
-  brand: string;
-
-  @Column('int')
-  quantity: number;
-
-  @Column({ type: 'numeric', precision: 10, scale: 2 })
-  price: number;
-
-  @Column()
-  category_id: string;
+  user_id: string;
 
   @CreateDateColumn()
   created_at: string;
@@ -32,4 +23,4 @@ class Product {
   updated_at: string;
 }
 
-export default Product;
+export default Category;

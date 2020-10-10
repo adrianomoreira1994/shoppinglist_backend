@@ -5,51 +5,43 @@ import IProductRepository from '../repositories/IProductRepository';
 import Product from '../infra/typeorm/entities/Product';
 
 interface IRequest {
+  product_id: string;
   name: string;
   brand: string;
   quantity: number;
   price: number;
   category_id: string;
-  user_id: string;
 }
 
 @injectable()
-class CreateProductService {
+class UpdateProductService {
   constructor(
     @inject('ProductRepository')
     private productRepository: IProductRepository,
   ) {}
 
   public async execute({
+    product_id,
     name,
     brand,
     quantity,
     price,
     category_id,
-    user_id,
   }: IRequest): Promise<Product> {
-    var productExists = await this.productRepository.findByBrandAndName(
-      name,
-      brand,
-    );
+    var product = await this.productRepository.findById(product_id);
 
-    if (productExists) {
-      throw new AppError(
-        'There is already a product registered with that name and that brand',
-      );
+    if (!product) {
+      throw new AppError('Product is not exists');
     }
 
-    var product = await this.productRepository.create({
-      name,
-      brand,
-      quantity,
-      price,
-      category_id,
-      user_id,
-    });
+    product.name = name;
+    product.price = price;
+    product.quantity = quantity;
+    product.brand = brand;
+    product.category_id = category_id;
 
-    return product;
+    return await this.productRepository.save(product);
   }
 }
 
-export default CreateProductService;
+export default UpdateProductService;

@@ -34,8 +34,8 @@ describe('CreateProduct', () => {
       user_id: 'user-id',
     });
 
-    expect(
-      await createProductService.execute({
+    await expect(
+      createProductService.execute({
         name: 'Detergente',
         brand: 'Ype',
         price: 1.89,
