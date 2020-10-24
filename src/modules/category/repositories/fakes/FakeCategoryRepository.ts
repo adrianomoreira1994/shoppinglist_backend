@@ -39,6 +39,14 @@ class FakeCategoryRepository implements ICategoryRepository {
 
     return this.categories[findIndex];
   }
+
+  public async remove(category: Category): Promise<void> {
+    const findIndex = this.categories.findIndex(c => c.id === category.id);
+
+    if (findIndex >= 0) {
+      this.categories.splice(findIndex, 1);
+    }
+  }
 }
 
 export default FakeCategoryRepository;

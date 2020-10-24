@@ -5,5 +5,6 @@ export default interface ICategoryRepository {
   findById(id: string): Promise<Category | undefined>;
   findByName(name: string): Promise<Category | undefined>;
   create(data: ICreateCategorytDTO): Promise<Category>;
-  save(user: Category): Promise<Category>;
+  save(category: Category): Promise<Category>;
+  remove(category: Category): Promise<void>;
 }
