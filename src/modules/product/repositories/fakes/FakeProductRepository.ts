@@ -44,6 +44,17 @@ class FakeProductRepository implements IProductRepository {
 
     return this.products[findIndex];
   }
+
+  public async remove(product: Product): Promise<boolean> {
+    const findIndex = this.products.findIndex(p => p.id === product.id);
+
+    if (findIndex >= 0) {
+      this.products.splice(findIndex, 1);
+      return true;
+    }
+
+    return false;
+  }
 }
 
 export default FakeProductRepository;

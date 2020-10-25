@@ -3,6 +3,7 @@ import { getRepository, Repository } from 'typeorm';
 import Category from '../entities/Category';
 import ICreateCategorytDTO from '@modules/category/dtos/ICreateCategoryDTO';
 import ICategoryRepository from '@modules/category/repositories/ICategoryRepository';
+import { isTypeQueryNode } from 'typescript';
 
 class CategoryRepository implements ICategoryRepository {
   private ormRepository: Repository<Category>;
@@ -35,9 +36,13 @@ class CategoryRepository implements ICategoryRepository {
     return await this.ormRepository.save(category);
   }
 
-  public async remove(category: Category): Promise<void> {
+  public async remove(category: Category): Promise<boolean> {
     const deletedCategory = await this.ormRepository.remove(category);
-    await this.save(deletedCategory);
+    const c = await this.save(deletedCategory);
+
+    if (c) return true;
+
+    return false;
   }
 }
 

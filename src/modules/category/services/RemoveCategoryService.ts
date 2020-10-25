@@ -15,14 +15,16 @@ class RemoveCategoryService {
     private categoryRepository: ICategoryRepository,
   ) { }
 
-  public async execute({ category_id }: IRequest): Promise<void> {
+  public async execute({ category_id }: IRequest): Promise<boolean> {
     const category = await this.categoryRepository.findById(category_id);
 
     if (!category) {
       throw new AppError('Category is not exists');
     }
 
-    await this.categoryRepository.remove(category);
+    const deletedCategory = await this.categoryRepository.remove(category);
+
+    return deletedCategory;
   }
 }
 
